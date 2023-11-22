@@ -5,7 +5,7 @@
             "name": "Python: Flask",
             "type": "python",
             "request": "launch",
-            "pythonPath": "${workspaceFolder}/server/venv/bin/python",
+            "python": "${workspaceFolder}/server/venv/bin/python",
             "module": "flask",
             "env": {
                 "FLASK_APP": "server/server.py",

@@ -1,6 +1,6 @@
 # WikipediaGame
 
-This website is currently not deployed but there are instructions below of how to download, install and run it on your own machine.
+At the time of this writing available at http://192.168.16.72:5000/ from inside the Chapman network.
 
 ## Installation
 
