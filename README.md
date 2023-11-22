@@ -24,6 +24,13 @@ python server.py
 
 Play the game on [`localhost:5000`](http://127.0.0.1:5000/) (this link will only work after you started the server on your machine).
 
+## Further Ideas
+
+- Improve the efficiency of the search.
+- Add heuristics for faster search.
+- Use LLMs to make better guesses, resulting in faster search.
+- ...
+
 ## Branches
 
 - `version1` computes the shortest path betwen two wikipedia pages
