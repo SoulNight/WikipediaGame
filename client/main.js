@@ -44,7 +44,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         data.logs.forEach(function(log) {
             logsHtml += log + '\n';
         });
-        logsHtml += '\n<p>Elapsed time: ' + data.time + '</p>';
+        logsHtml += '\n<p>This is a test string</p>';
         logsHtml += '</pre>';
         logsElement.innerHTML = logsHtml;
     });
