@@ -30,22 +30,25 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
     .then(data => {
         if (!data) return; // if there was an error, data will be undefined
         console.log(data);
+        // output path
         var pathElement = document.getElementById('path');
-        var logsElement = document.getElementById('logs');
+        var pathHtml = '<ul>';
         pathElement.innerHTML = ''; // clear previous path
         logsElement.innerHTML = ''; // clear previous logs
-        var pathHtml = '<ul>';
         data.path.forEach(function(page) {
             pathHtml += '<li><a href="' + page + '">' + decodeURIComponent(page) + '</a></li>';
         });
         pathHtml += '</ul>';
         pathElement.innerHTML = pathHtml;
+        // output discovered pages 
+        var logsElement = document.getElementById('logs');
         var logsHtml = '<pre>';
         data.logs.forEach(function(log) {
             logsHtml += log + '\n';
         });
         logsHtml += '</pre>';
         logsElement.innerHTML = logsHtml;
+        // output stats
         var statsElement = document.getElementById('stats');
         var statsHtml = '<ul>';
         statsHtml += '<li>Elapsed time: ' + data.time + '</li>';
