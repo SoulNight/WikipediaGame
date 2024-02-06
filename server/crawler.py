@@ -35,7 +35,7 @@ def find_path(start_page, finish_page):
                 logs.append(log)
                 return path + [next], logs
             else:
-                log = f"Adding link to queue: {next} (depth {depth})"
+                log = f"Adding link to visited: {next} (depth {depth})"
                 print(log)
                 logs.append(log)
                 visited.add(next)
