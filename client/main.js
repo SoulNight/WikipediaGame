@@ -57,6 +57,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         statsHtml += '</ul>';
         console.log(statsHtml);
         statsElement.innerHTML = statsHtml;
+        console.log(statsElement.innerHTML);
     });
 });
 console.log("Finished fetch request...");
