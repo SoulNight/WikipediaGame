@@ -23,12 +23,12 @@ def find_path():
         response = jsonify({'path': path, 'logs': logs, 'time': time, 'discovered': discovered})
         print(response)
         return response
+    except TimeoutError as e:
+        app.logger.error(f"Error occurred: {e}")
+        return jsonify({'error': str(e), 'logs': logs, 'time': time, 'discovered': discovered}), 500
     except Exception as e:
         app.logger.error(f"Error occurred: {e}")
-        if not path: # search failed because it took too long   
-            return jsonify({'error': 'Search took too long', 'logs': logs, 'time': time, 'discovered': discovered}), 500
-        else: 
-            return jsonify({'error': 'An error occurred while finding path', 'logs': logs, 'time': time, 'discovered': discovered}), 500
+        return jsonify({'error': 'An error occurred while finding path', 'logs': logs, 'time': time, 'discovered': discovered}), 500
 
 @app.route('/static/<path:path>')
 def send_static(path):
