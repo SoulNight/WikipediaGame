@@ -36,7 +36,7 @@ def find_path(start_page, finish_page):
                 elapsed_time = time.time() - start_time
                 logs.append(f"Search took {elapsed_time} seconds.")
                 logs.append(f"Discovered pages: {len(discovered)}")
-                return path + [next], logs # return with success
+                return path + [next], logs, elapsed_time, len(discovered) # return with success
             else:
                 log = f"Adding link to queue: {next} (depth {depth})"
                 print(log)
@@ -46,4 +46,4 @@ def find_path(start_page, finish_page):
     elapsed_time = time.time() - start_time
     logs.append(f"Search took {elapsed_time} seconds.")
     logs.append(f"Discovered pages: {len(discovered)}")
-    return [], logs # return with failure (timeout)
+    return [], logs, elapsed_time, len(discovered) # return with failure (timeout)
