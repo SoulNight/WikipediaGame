@@ -54,6 +54,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         statsHtml += '<li>Elapsed time: ' + data.time + '</li>';
         statsHtml += '<li>Number of discovered pages: ' + data.logs.length + '</li>';
         statsHtml += '</ul>';
+        console.log(statsHtml);
         statsElement.innerHTML = statsHtml;
     });
 });
