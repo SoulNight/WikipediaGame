@@ -30,8 +30,10 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
     })
     .then(data => {
         if (!data) return; // if there was an error, data will be undefined
+        console.log('about to output data')
         console.log(data);
         // output path
+        console.log('about to output path')
         var pathElement = document.getElementById('path');
         pathElement.innerHTML = ''; // clear previous path
         var pathHtml = '<ul>';
@@ -41,6 +43,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         pathHtml += '</ul>';
         pathElement.innerHTML = pathHtml;
         // output discovered pages 
+        console.log('about to output logs')
         var logsElement = document.getElementById('logs');
         logsElement.innerHTML = ''; // clear previous logs
         var logsHtml = '<pre>';
@@ -50,14 +53,14 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         logsHtml += '</pre>';
         logsElement.innerHTML = logsHtml;
         // output stats
+        console.log('about to output stats')
         var statsElement = document.getElementById('stats');
+        statsElement.innerHTML = ''; // clear previous stats
         var statsHtml = '<ul>';
         statsHtml += '<li>Elapsed time: ' + data.time + '</li>';
-        statsHtml += '<li>Number of discovered pages: ' + data.logs.length + '</li>';
+        statsHtml += '<li>Number of discovered pages: ' + data.discovered + '</li>';
         statsHtml += '</ul>';
-        console.log(statsHtml);
         statsElement.innerHTML = statsHtml;
-        console.log(statsElement.innerHTML);
     });
 });
 console.log("Finished fetch request...");
