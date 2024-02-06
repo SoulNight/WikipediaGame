@@ -18,7 +18,7 @@ def get_links(page_url):
 
 def find_path(start_page, finish_page):
     queue = [(start_page, [start_page], 0)]
-    visited = set()
+    discovered = set()
     logs = []
 
     # breadth first search
@@ -28,7 +28,7 @@ def find_path(start_page, finish_page):
         if elapsed_time >= 30:
             logs.append(f"Search took too long ({elapsed_time} seconds). Time limit exceeded.")
         (vertex, path, depth) = queue.pop(0)
-        for next in set(get_links(vertex)) - visited:
+        for next in set(get_links(vertex)) - discovered:
             if next == finish_page:
                 log = f"Found finish page: {next}"
                 print(log)
@@ -38,7 +38,7 @@ def find_path(start_page, finish_page):
                 log = f"Adding link to visited: {next} (depth {depth})"
                 print(log)
                 logs.append(log)
-                visited.add(next)
+                discovered.add(next)
                 queue.append((next, path + [next], depth + 1))
     elapsed_time = time.time() - start_time
     logs.append(f"Search took {elapsed_time} seconds.")
