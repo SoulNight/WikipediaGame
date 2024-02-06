@@ -26,6 +26,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         console.error('Error:', error);
         var logsElement = document.getElementById('logs');
         logsElement.innerHTML = error.message + (data && data.time ? '<p>Elapsed time: ' + data.time + '</p>' : '');
+        return Promise.reject(error);
     })
     .then(data => {
         if (!data) return; // if there was an error, data will be undefined
