@@ -44,6 +44,7 @@ def find_path(start_page, finish_page):
                 queue.append((next, path + [next], depth + 1))
         elapsed_time = time.time() - start_time
     logs.append(f"Search took {elapsed_time} seconds.")
+    print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
     logs.append(f"Discovered pages: {len(discovered)}")
     raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(discovered))
 class TimeoutErrorWithLogs(Exception):
