@@ -22,7 +22,10 @@ def find_path(start_page, finish_page):
     logs = []
 
     start_time = time.time()
-    while queue and time.time() - start_time < 0.1:  # 30 seconds time limit
+    while queue and time.time() - start_time < 30:  # 30 seconds time limit
+    elapsed_time = time.time() - start_time
+    if elapsed_time >= 30:
+        logs.append(f"Search took too long ({elapsed_time} seconds). Time limit exceeded.")
         (vertex, path, depth) = queue.pop(0)
         for next in set(get_links(vertex)) - visited:
             log = f"Following link: {next} (depth {depth})"
