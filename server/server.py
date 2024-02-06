@@ -24,8 +24,8 @@ def find_path():
         print(response)
         return response
     except TimeoutError as e:
-        app.logger.error(f"Error occurred: {e}")
-        return jsonify({'error': str(e), 'logs': logs, 'time': time, 'discovered': discovered}), 500
+        app.logger.error(f"Error occurred: {e[0]}")
+        return jsonify({'error': str(e[0]), 'logs': e[1], 'time': e[2], 'discovered': e[3]}), 500
     except Exception as e:
         app.logger.error(f"Error occurred: {e}")
         return jsonify({'error': 'An error occurred while finding path', 'logs': logs, 'time': time, 'discovered': discovered}), 500
