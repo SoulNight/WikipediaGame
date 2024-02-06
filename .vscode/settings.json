@@ -1,0 +1,5 @@
+{
+    "appService.showBuildDuringDeployPrompt": false,
+    "appService.defaultWebAppToDeploy": "/subscriptions/437c6dcd-9f1f-4801-98e3-7c8b5dfd6703/resourceGroups/rg_akurz/providers/Microsoft.Web/sites/WikipiediaGame",
+    "appService.deploySubpath": "."
+}

@@ -10,7 +10,7 @@ def home():
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/find_path', methods=['POST'])
-@limiter.limit("1/minute")  # adjust as needed
+@limiter.limit("5/minute")  # limit requests per minute and IP address, adjust as needed
 def find_path():
     try:
         data = request.get_json()
