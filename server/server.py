@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory, Response
 from flask_limiter import Limiter
+
+RATE_LIMIT = "30/minute"  # Define a new constant for the rate limit
 import crawler
 
 app = Flask(__name__, static_folder='../client')
@@ -10,7 +12,7 @@ def home():
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/find_path', methods=['POST'])
-@limiter.limit("30/minute")  # limit requests per minute and IP address, adjust as needed
+@limiter.limit(RATE_LIMIT)  # Use the new constant instead of the hardcoded rate limit
 def find_path():
     try:
         data = request.get_json()
