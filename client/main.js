@@ -45,7 +45,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
             logsHtml += log + '\n';
         });
         logsHtml += '</pre>';
-        logsHtml += '<p>Elapsed time: ' + data.time + '</p>';
+        logsHtml += '\n<p>Elapsed time: ' + data.time + '</p>';
         logsElement.innerHTML = logsHtml;
     });
 });
