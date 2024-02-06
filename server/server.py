@@ -24,10 +24,11 @@ def find_path():
         return response
     except Exception as e:
         app.logger.error(f"Error occurred: {e}")
+        elapsed_time = logs[-1]
         if not path:
-            return jsonify({'error': logs[-1], 'logs': logs, 'time': logs[-1]}), 500
+            return jsonify({'error': logs[-1], 'logs': logs, 'time': elapsed_time}), 500
         else:
-            return jsonify({'error': 'An error occurred while finding path', 'logs': logs}), 500
+            return jsonify({'error': 'An error occurred while finding path', 'logs': logs, 'time': elapsed_time}), 500
 
 @app.route('/static/<path:path>')
 def send_static(path):
