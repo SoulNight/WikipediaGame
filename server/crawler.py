@@ -23,17 +23,14 @@ def find_path(start_page, finish_page):
 
     # breadth first search
     start_time = time.time()
-    while queue and time.time() - start_time < 30:  # 30 seconds time limit
-        elapsed_time = time.time() - start_time
-        if elapsed_time >= 30:
-            raise TimeoutError(f"Search took too long ({elapsed_time} seconds). Time limit exceeded.")
+    elapsed_time = time.time() - start_time
+    while queue and elapsed_time < 30:  # 30 seconds time limit
         (vertex, path, depth) = queue.pop(0)
         for next in set(get_links(vertex)) - discovered:
             if next == finish_page:
                 log = f"Found finish page: {next}"
                 print(log)
                 logs.append(log)
-                elapsed_time = time.time() - start_time
                 logs.append(f"Search took {elapsed_time} seconds.")
                 logs.append(f"Discovered pages: {len(discovered)}")
                 return path + [next], logs, elapsed_time, len(discovered) # return with success
@@ -43,7 +40,7 @@ def find_path(start_page, finish_page):
                 logs.append(log)
                 discovered.add(next)
                 queue.append((next, path + [next], depth + 1))
-    elapsed_time = time.time() - start_time
+        elapsed_time = time.time() - start_time
     logs.append(f"Search took {elapsed_time} seconds.")
     logs.append(f"Discovered pages: {len(discovered)}")
     return [], logs, elapsed_time, len(discovered) # return with failure (timeout)
