@@ -34,6 +34,7 @@ def find_path(start_page, finish_page):
                 print(log)
                 logs.append(log)
                 logs.append(f"Search took {elapsed_time} seconds.")
+                print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
                 logs.append(f"Discovered pages: {len(discovered)}")
                 return path + [next], logs, elapsed_time, len(discovered) # return with success
             else:
