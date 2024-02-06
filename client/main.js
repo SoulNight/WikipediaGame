@@ -45,6 +45,9 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
             logsHtml += log + '\n';
         });
         logsHtml += '</pre>';
+        if (!data.path.length) {
+            logsHtml += '<p>' + data.time + '</p>';
+        }
         logsElement.innerHTML = logsHtml;
     });
 });

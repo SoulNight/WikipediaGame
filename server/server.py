@@ -25,7 +25,7 @@ def find_path():
     except Exception as e:
         app.logger.error(f"Error occurred: {e}")
         if not path:
-            return jsonify({'error': logs[-1], 'logs': logs}), 500
+            return jsonify({'error': logs[-1], 'logs': logs, 'time': logs[-1]}), 500
         else:
             return jsonify({'error': 'An error occurred while finding path', 'logs': logs}), 500
 
