@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 
 import re
 
+TIMEOUT = 5  # Define a new constant for the timeout
+
 def get_links(page_url):
     print(f"Fetching page: {page_url}")
     response = requests.get(page_url)
@@ -24,7 +26,7 @@ def find_path(start_page, finish_page):
     # breadth first search
     start_time = time.time()
     elapsed_time = time.time() - start_time
-    while queue and elapsed_time < 5:  # seconds time limit, adapt as needed
+    while queue and elapsed_time < TIMEOUT:  # Use the new constant instead of the hardcoded timeout
         (vertex, path, depth) = queue.pop(0)
         for next in set(get_links(vertex)) - discovered:
             if next == finish_page:
