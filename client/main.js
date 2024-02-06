@@ -25,7 +25,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
     .catch(error => {
         console.error('Error:', error);
         var logsElement = document.getElementById('logs');
-        logsElement.innerHTML = error.message;
+        logsElement.innerHTML = error.message + (data && data.time ? '<p>Elapsed time: ' + data.time + '</p>' : '');
     })
     .then(data => {
         if (!data) return; // if there was an error, data will be undefined
@@ -45,9 +45,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
             logsHtml += log + '\n';
         });
         logsHtml += '</pre>';
-        if (!data.path.length) {
-            logsHtml += '<p>' + data.time + '</p>';
-        }
+        logsHtml += '<p>Elapsed time: ' + data.time + '</p>';
         logsElement.innerHTML = logsHtml;
     });
 });
