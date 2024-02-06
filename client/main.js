@@ -26,13 +26,13 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         console.error('Error:', error);
         var pathElement = document.getElementById('path');
         pathElement.innerHTML = '<p>Error: ' + error.message + '</p>';
-        return error.response.json();
+        // return error.response.json();
     })
     .then(data => {
         if (!data) return; // if there was an error, data will be undefined
         var logsElement = document.getElementById('logs');
         logsElement.innerHTML = data.error + (data.time ? '<p>Elapsed time: ' + data.time + '</p>' : '');
-        return Promise.reject(error);
+        // return Promise.reject(error);
     })
     .then(data => {
         if (!data) return; // if there was an error, data will be undefined
