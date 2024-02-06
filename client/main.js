@@ -25,7 +25,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
     .catch(error => {
         console.error('Error:', error);
         var logsElement = document.getElementById('logs');
-        logsElement.innerHTML = error;
+        logsElement.innerHTML = error.message;
     })
     .then(data => {
         if (!data) return; // if there was an error, data will be undefined
