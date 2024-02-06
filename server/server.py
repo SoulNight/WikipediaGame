@@ -19,7 +19,8 @@ def find_path():
 
         path, logs = crawler.find_path(start_page, finish_page)
 
-        response = jsonify({'path': path, 'logs': logs})
+        elapsed_time = logs[-1]
+        response = jsonify({'path': path, 'logs': logs, 'time': elapsed_time})
         print(response)
         return response
     except Exception as e:
