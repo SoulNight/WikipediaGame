@@ -24,12 +24,14 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
     })
     .catch(error => {
         console.error('Error:', error);
-        console.log('Server response:', error.response);
-        // output discovered pages 
-        var logsElement = document.getElementById('logs');
-        logsElement.innerHTML = error.message + (data && data.time ? '<p>Elapsed time: ' + data.time + '</p>' : '');
         var pathElement = document.getElementById('path');
         pathElement.innerHTML = '<p>Error: ' + error.message + '</p>';
+        return error.response.json();
+    })
+    .then(data => {
+        if (!data) return; // if there was an error, data will be undefined
+        var logsElement = document.getElementById('logs');
+        logsElement.innerHTML = data.error + (data.time ? '<p>Elapsed time: ' + data.time + '</p>' : '');
         return Promise.reject(error);
     })
     .then(data => {
