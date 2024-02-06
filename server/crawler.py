@@ -29,16 +29,13 @@ def find_path(start_page, finish_page):
             logs.append(f"Search took too long ({elapsed_time} seconds). Time limit exceeded.")
         (vertex, path, depth) = queue.pop(0)
         for next in set(get_links(vertex)) - visited:
-            log = f"Following link: {next} (depth {depth})"
-            print(log)
-            logs.append(log)
             if next == finish_page:
                 log = f"Found finish page: {next}"
                 print(log)
                 logs.append(log)
                 return path + [next], logs
             else:
-                log = f"Adding link to queue: {next}"
+                log = f"Adding link to queue: {next} (depth {depth})"
                 print(log)
                 logs.append(log)
                 visited.add(next)
