@@ -46,6 +46,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         });
         logsHtml += '\n<p>This is a test string</p>';
         logsHtml += '</pre>';
+        console.log(logsHtml);
         logsElement.innerHTML = logsHtml;
     });
 });
