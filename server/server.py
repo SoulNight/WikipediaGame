@@ -24,7 +24,10 @@ def find_path():
         return response
     except Exception as e:
         app.logger.error(f"Error occurred: {e}")
-        return jsonify({'error': 'An error occurred while finding path', 'logs': logs}), 500
+        if not path:
+            return jsonify({'error': 'The search took too long. Please try again with closer pages.', 'logs': logs}), 500
+        else:
+            return jsonify({'error': 'An error occurred while finding path', 'logs': logs}), 500
 
 @app.route('/static/<path:path>')
 def send_static(path):

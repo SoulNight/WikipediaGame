@@ -1,3 +1,4 @@
+import time
 import requests
 from bs4 import BeautifulSoup
 
@@ -20,7 +21,10 @@ def find_path(start_page, finish_page):
     visited = set()
     logs = []
 
-    while queue:
+    import time
+
+    start_time = time.time()
+    while queue and time.time() - start_time < 30:  # 30 seconds time limit
         (vertex, path, depth) = queue.pop(0)
         for next in set(get_links(vertex)) - visited:
             log = f"Following link: {next} (depth {depth})"
