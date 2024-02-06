@@ -24,6 +24,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
     })
     .catch(error => {
         console.error('Error:', error);
+        // output discovered pages 
         var logsElement = document.getElementById('logs');
         logsElement.innerHTML = error.message + (data && data.time ? '<p>Elapsed time: ' + data.time + '</p>' : '');
         var pathElement = document.getElementById('path');
