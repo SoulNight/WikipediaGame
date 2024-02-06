@@ -32,9 +32,8 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         console.log(data);
         // output path
         var pathElement = document.getElementById('path');
-        var pathHtml = '<ul>';
         pathElement.innerHTML = ''; // clear previous path
-        logsElement.innerHTML = ''; // clear previous logs
+        var pathHtml = '<ul>';
         data.path.forEach(function(page) {
             pathHtml += '<li><a href="' + page + '">' + decodeURIComponent(page) + '</a></li>';
         });
@@ -42,6 +41,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         pathElement.innerHTML = pathHtml;
         // output discovered pages 
         var logsElement = document.getElementById('logs');
+        logsElement.innerHTML = ''; // clear previous logs
         var logsHtml = '<pre>';
         data.logs.forEach(function(log) {
             logsHtml += log + '\n';
