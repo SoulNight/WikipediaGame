@@ -32,7 +32,7 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         if (!data) return; // if there was an error, data will be undefined
         var logsElement = document.getElementById('logs');
         logsElement.innerHTML = data.error + (data.time ? '<p>Elapsed time: ' + data.time + '</p>' : '');
-        // return Promise.reject(error);
+        return data; // return data so it can be used in the next .then block
     })
     .then(data => {
         if (!data) return; // if there was an error, data will be undefined
