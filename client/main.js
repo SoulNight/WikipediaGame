@@ -44,10 +44,14 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
         data.logs.forEach(function(log) {
             logsHtml += log + '\n';
         });
-        logsHtml += '\n<p>This is a test string</p>';
         logsHtml += '</pre>';
-        console.log(logsHtml);
         logsElement.innerHTML = logsHtml;
+        var statsElement = document.getElementById('stats');
+        var statsHtml = '<ul>';
+        statsHtml += '<li>Elapsed time: ' + data.time + '</li>';
+        statsHtml += '<li>Number of discovered pages: ' + data.logs.length + '</li>';
+        statsHtml += '</ul>';
+        statsElement.innerHTML = statsHtml;
     });
 });
 console.log("Finished fetch request...");
