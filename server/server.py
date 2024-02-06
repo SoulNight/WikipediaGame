@@ -1,13 +1,16 @@
 from flask import Flask, request, jsonify, send_from_directory, Response
+from flask_limiter import Limiter
 import crawler
 
 app = Flask(__name__, static_folder='../client')
+limiter = Limiter(app, key_func=lambda: request.remote_addr)
 
 @app.route('/', methods=['GET'])
 def home():
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/find_path', methods=['POST'])
+@limiter.limit("10/minute")  # adjust as needed
 def find_path():
     try:
         data = request.get_json()
