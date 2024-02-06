@@ -44,8 +44,14 @@ def find_path(start_page, finish_page):
     if elapsed_time >= 30:
         logs.append(f"Search took {elapsed_time} seconds.")
         logs.append(f"Discovered pages: {len(discovered)}")
-        raise TimeoutError("Search exceeded time limit."), logs, elapsed_time, len(discovered)
+        raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(discovered))
     else:
         logs.append(f"Search took {elapsed_time} seconds.")
         logs.append(f"Discovered pages: {len(discovered)}")
         return [], logs, elapsed_time, len(discovered) # return with failure (timeout)
+class TimeoutErrorWithLogs(Exception):
+    def __init__(self, message, logs, time, discovered):
+        super().__init__(message)
+        self.logs = logs
+        self.time = time
+        self.discovered = discovered
