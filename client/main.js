@@ -16,8 +16,19 @@ document.getElementById('wiki-form').addEventListener('submit', function(event) 
             finish: finishPage
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.status === 429) {
+            throw new Error('You have made too many requests. Please try again later.');
+        }
+        return response.json();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        var logsElement = document.getElementById('logs');
+        logsElement.innerHTML = error;
+    })
     .then(data => {
+        if (!data) return; // if there was an error, data will be undefined
         console.log(data);
         var pathElement = document.getElementById('path');
         var logsElement = document.getElementById('logs');
