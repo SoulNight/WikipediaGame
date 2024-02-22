@@ -8,3 +8,4 @@ source venv/bin/activate
 
 # Install the dependencies
 pip install -r requirements.txt
+pip install Flask-Limiter
