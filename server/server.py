@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify, send_from_directory, Response
 from flask_limiter import Limiter
-
-RATE_LIMIT = "30/minute"  # Define a new constant for the rate limit
 import crawler
+
+RATE_LIMIT = "5/minute"  # requests per minute and IP address
 
 app = Flask(__name__, static_folder='../client')
 limiter = Limiter(app, key_func=lambda: request.remote_addr)
