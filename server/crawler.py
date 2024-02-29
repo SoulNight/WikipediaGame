@@ -2,10 +2,17 @@ import time
 import requests
 from bs4 import BeautifulSoup
 import re
+import requests_cache
 
-TIMEOUT = 20  # time limit in seconds for the search
+# TIMEOUT = 20  # time limit in seconds for the search
+TIMEOUT = 240  # time limit in seconds for the search
+
+# Initialize caching
+requests_cache.install_cache('my_cache')
 
 def get_links(page_url):
+    # Introduce a delay before making the request
+    time.sleep(1)
     print(f"Fetching page: {page_url}")
     response = requests.get(page_url)
     print(f"Finished fetching page: {page_url}")
@@ -47,6 +54,7 @@ def find_path(start_page, finish_page):
     print(f"Search took {elapsed_time} seconds.")  # Add a print statement to log the elapsed time
     logs.append(f"Discovered pages: {len(discovered)}")
     raise TimeoutErrorWithLogs("Search exceeded time limit.", logs, elapsed_time, len(discovered))
+
 class TimeoutErrorWithLogs(Exception):
     def __init__(self, message, logs, time, discovered):
         super().__init__(message)
