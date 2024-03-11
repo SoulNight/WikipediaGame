@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify, send_from_directory, Response
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from crawler import abort_search_event
 import crawler
 
-RATE_LIMIT = "5/minute"  # requests per minute and IP address
+RATE_LIMIT = "5/minute"  # requests per minute andclear IP address
 
 app = Flask(__name__, static_folder='../client')
 # limiter = Limiter(app, key_func=lambda: request.remote_addr)
@@ -44,6 +45,12 @@ def stream_logs():
         for log in logs:
             yield f"data: {log}\n\n"
     return Response(generate(), mimetype='text/event-stream')
+
+@app.route('/abort_search', methods=['POST'])
+def abort_search():
+    abort_search_event.set()  # This will signal the crawler to stop
+    abort_search_event.clear()  # Reset the event after the search has stopped
+    return jsonify({'message': 'Search abort initiated'}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, threaded=True)
