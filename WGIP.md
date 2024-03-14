@@ -1,4 +1,4 @@
-Author: Tony Bautista
+Author: Tony Bautista & Aidan Lewis Grenz
 
 Wikipedia Game Improvement Proposal (WGIP)
 
