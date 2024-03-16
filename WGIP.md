@@ -63,8 +63,7 @@ Conclusion
 The proposal aims to enhance search efficiency and user experience in the Wikipedia Game without extensive modifications by integrating a content-aware heuristic. Special libraries for NLP, like NLTK or spaCy, and word embedding models, such as Word2Vec or GloVe, may be considered for advanced analysis and optimization.
 
 
-Thursday's Lectures notes (3-14-24)
-
+---Thursday's Lectures notes (3-14-24)---
 The insights we gained from Thursday's lecture introduce a variety of advanced techniques and strategies that can significantly optimize the Wikipedia Game Improvement Proposal (WGIP). These enhancements focus on leveraging artificial intelligence, efficient data handling, and algorithm optimization to streamline the search process and improve the overall user experience. Here’s an elaboration on these enhancements:
 
 AI and Machine Learning Integration
