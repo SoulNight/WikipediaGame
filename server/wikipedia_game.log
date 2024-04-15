@@ -1,0 +1,49 @@
+2024-03-27 20:55:16,160  * Running on all addresses (0.0.0.0)
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.20:5001 (Press CTRL+C to quit)
+2024-03-27 20:55:31,292 127.0.0.1 - - [27/Mar/2024 20:55:31] "[36mGET / HTTP/1.1[0m" 304 -
+2024-03-27 20:55:31,307 127.0.0.1 - - [27/Mar/2024 20:55:31] "[36mGET /static/main.js?v=3 HTTP/1.1[0m" 304 -
+2024-03-27 20:55:31,307 127.0.0.1 - - [27/Mar/2024 20:55:31] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2024-03-27 20:55:33,741 127.0.0.1 - - [27/Mar/2024 20:55:33] "[36mGET / HTTP/1.1[0m" 304 -
+2024-03-27 20:55:33,754 127.0.0.1 - - [27/Mar/2024 20:55:33] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2024-03-27 20:55:33,755 127.0.0.1 - - [27/Mar/2024 20:55:33] "[36mGET /static/main.js?v=3 HTTP/1.1[0m" 304 -
+2024-03-27 20:55:36,675 127.0.0.1 - - [27/Mar/2024 20:55:36] "[36mGET / HTTP/1.1[0m" 304 -
+2024-03-27 20:55:36,688 127.0.0.1 - - [27/Mar/2024 20:55:36] "[36mGET /static/main.js?v=3 HTTP/1.1[0m" 304 -
+2024-03-27 20:55:36,689 127.0.0.1 - - [27/Mar/2024 20:55:36] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2024-03-27 20:57:31,525 127.0.0.1 - - [27/Mar/2024 20:57:31] "[36mGET / HTTP/1.1[0m" 304 -
+2024-03-27 20:57:31,667 127.0.0.1 - - [27/Mar/2024 20:57:31] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2024-03-27 20:57:31,674 127.0.0.1 - - [27/Mar/2024 20:57:31] "[36mGET /static/main.js?v=3 HTTP/1.1[0m" 304 -
+2024-03-27 20:57:33,864 Exception on /find_path [POST]
+Traceback (most recent call last):
+  File "/Users/tony/WikipediaGame/server/server.py", line 25, in find_path
+    path, logs, time, discovered = crawler.find_path(start_page, finish_page)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tony/WikipediaGame/server/crawler.py", line 44, in find_path
+    target_page_keywords = extract_keywords(finish_page_content)
+                           ^^^^^^^^^^^^^^^^
+NameError: name 'extract_keywords' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/tony/WikipediaGame/server/venv/lib/python3.12/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tony/WikipediaGame/server/venv/lib/python3.12/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tony/WikipediaGame/server/venv/lib/python3.12/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tony/WikipediaGame/server/venv/lib/python3.12/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tony/WikipediaGame/server/venv/lib/python3.12/site-packages/flask_limiter/extension.py", line 1299, in __inner
+    return cast(R, flask.current_app.ensure_sync(obj)(*a, **k))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tony/WikipediaGame/server/server.py", line 31, in find_path
+    except crawler.TimeoutErrorWithLogs as e:
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'crawler' has no attribute 'TimeoutErrorWithLogs'
+2024-03-27 20:57:33,878 127.0.0.1 - - [27/Mar/2024 20:57:33] "[35m[1mPOST /find_path HTTP/1.1[0m" 500 -

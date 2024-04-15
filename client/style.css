@@ -1,4 +1,138 @@
 body {
-    background-color: white;
-    color: black;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #343a40;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="url"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+fieldset {
+    margin: 10px 0;
+    border: none;
+}
+
+legend {
+    font-weight: bold;
+}
+
+input[type="submit"],
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+input[type="submit"]:hover,
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Shared style for sections with rounded corners and shadows */
+.section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+/* Styles for the results and logs lists */
+#results-list,
+#logs-content {
+    list-style-type: none; /* For results-list, removes default list bullets */
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 10px;
+    max-height: 200px; /* Adjust height as needed */
+    overflow-y: auto; /* Allows scrolling */
+    margin-top: 10px;
+}
+
+#results-list li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ced4da; /* Adds a light line between items */
+}
+
+#results-list li:last-child {
+    border-bottom: none; /* Removes the border from the last item */
+}
+
+h2 {
+    color: #007bff;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+}
+
+.footer-content {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Hover effect for links */
+a:hover {
+    text-decoration: underline;
+}
+
+
+.search-status {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .status-message {
+    margin: 0;
+    padding-bottom: 10px; /* Give some space between the messages */
+    font-weight: bold;
+  }
+  
+  .search-id {
+    margin: 0;
+    color: #555; /* Subtle color for the ID */
+    font-size: 0.9em; /* Smaller font size for the ID */
+  }
+  
+  

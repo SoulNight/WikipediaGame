@@ -1,117 +1,128 @@
-console.log("Starting fetch request...");
-
-// Flag to indicate if an abort has been requested.
-let abortRequested = false;
-let searchIntervalId; // ID of the interval that updates the elapsed time
+console.log("Starting fetch request setup...");
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    console.log("Starting fetch request...");
+    const form = document.getElementById('wiki-form');
+    const logsElement = document.getElementById('logs-content');
+    const abortButton = document.getElementById('abort-btn');
+    const searchingElement = document.getElementById('searching');
+    const searchIdElement = document.getElementById('search-id');
+    let searchId;
 
-    // Flag to indicate if an abort has been requested.
-    let abortRequested = false;
-    let searchIntervalId; // ID of the interval that updates the elapsed time
+    // EventSource to listen for logs from the server
+    const eventSource = new EventSource('/logs');
+    eventSource.onmessage = function(event) {
+        const logItem = document.createElement('div');
+        logItem.textContent = event.data;
+        logsElement.appendChild(logItem);
+    };
 
-    document.getElementById('wiki-form').addEventListener('submit', function(event) {
+    form.addEventListener('submit', function(event) {
         event.preventDefault();
-        abortRequested = false;  // Reset the abort flag on new search
+        searchingElement.textContent = 'Searching...';
+        logsElement.innerHTML = ''; // Reset logs
+        document.getElementById('results-list').innerHTML = ''; // Clear search results
 
-        document.getElementById('path').innerHTML = '';
-        document.getElementById('logs').innerHTML = '';
-        document.getElementById('stats').innerHTML = '';
-        document.getElementById('searching').innerHTML = 'Searching...';
+        const startPage = document.getElementById('start-page').value;
+        const finishPage = document.getElementById('finish-page').value;
+        const searchMethod = document.querySelector('input[name="search-method"]:checked').value;
 
-        // Start the timer and update the elapsed time every second
-        const startTime = Date.now();
-        searchIntervalId = setInterval(() => {
-            const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
-            document.getElementById('searching').innerHTML = `Searching... ${elapsedTime} seconds`;
-        }, 1000);
-
-        var startPage = document.getElementById('start-page').value;
-        var finishPage = document.getElementById('finish-page').value;
-
-        console.log("Sending fetch request...");
         fetch('/find_path', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 start: startPage,
-                finish: finishPage
-            })
+                finish: finishPage,
+                method: searchMethod,
+            }),
         })
         .then(response => {
-            if (response.status === 429) {
-                throw new Error('You have made too many requests. Please try again later.');
+            if (!response.ok) {
+                throw new Error(`Server responded with status code: ${response.status}`);
             }
             return response.json();
         })
+        .then(data => {
+            searchId = data.search_id;
+            searchingElement.textContent = 'Search started.';
+            searchIdElement.textContent = `Search ID: ${searchId}`;
+            console.log('Search ID:', searchId);
+
+            // Start polling for search results
+            pollForResults(searchId);
+        })
         .catch(error => {
             console.error('Error:', error);
-            var pathElement = document.getElementById('path');
-            pathElement.innerHTML = '<p>Error: ' + error.message + '</p>';
-        })
-        .then(data => {
-            clearInterval(searchIntervalId);  // Stop the search timer
-            document.getElementById('searching').innerHTML = '';  // Clear the searching message
-
-            // If an abort was requested or if there's no data/error, do not process further.
-            if (abortRequested || !data || data.error) {
-                console.log('Search aborted or error occurred, not processing data.');
-                return;
-            }
-
-            console.log('about to output data');
-            console.log(data);
-
-            // output path
-            var pathElement = document.getElementById('path');
-            pathElement.innerHTML = '<ul>';
-            data.path.forEach(function(page) {
-                pathElement.innerHTML += '<li><a href="' + page + '">' + decodeURIComponent(page) + '</a></li>';
-            });
-            pathElement.innerHTML += '</ul>';
-
-            // output logs
-            var logsElement = document.getElementById('logs');
-            logsElement.innerHTML = '<pre>' + data.logs.join('\n') + '</pre>';
-
-            // output stats
-            var statsElement = document.getElementById('stats');
-            statsElement.innerHTML = '<ul>' +
-                                    '<li>Elapsed time: ' + data.time + '</li>' +
-                                    '<li>Number of discovered pages: ' + data.discovered + '</li>' +
-                                    '</ul>';
+            searchingElement.textContent = `Error: ${error.message}`;
         });
     });
 
-    function abortSearch() {
-        if (!abortRequested) { // Only run if abort hasn't already been requested
-            console.log("Aborting search...");
-            abortRequested = true; // Signal that an abort has been requested
-            
-            fetch('/abort_search', { method: 'POST' })
+    abortButton.addEventListener('click', function() {
+        if (searchId) {
+            fetch('/abort_search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ search_id: searchId }),
+            })
             .then(response => {
-                if(response.ok) {
-                    console.log('Search aborted successfully.');
-                    document.getElementById('searching').innerHTML = 'Search has been aborted.';
-                } else {
-                    return response.text().then(text => {
-                        throw new Error('Failed to abort the search. Status: ' + response.status + ' Response: ' + text);
-                    });
+                if (!response.ok) {
+                    throw new Error(`Failed to abort the search. Status: ${response.status}`);
                 }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Search aborted successfully.');
+                searchingElement.textContent = 'Search has been aborted.';
+                searchIdElement.textContent = '';
             })
             .catch(error => {
                 console.error('Error:', error);
-                document.getElementById('searching').innerHTML = 'Error: ' + error.message;
+                searchingElement.textContent = `Error: ${error.message}`;
             });
-    
-            clearInterval(searchIntervalId);  // Clear the interval when the search is aborted
+        } else {
+            console.log('No search has been started to abort.');
         }
-    }
-    // Bind the abort function to the abort button
-    document.getElementById('abort-btn').addEventListener('click', abortSearch);
+    });
 
     console.log("Finished fetch request setup.");
 });
+
+function pollForResults(searchId) {
+    setTimeout(() => {
+        fetch(`/get_results/${searchId}`)
+            .then(response => {
+                if (!response.ok && response.status !== 202) {
+                    throw new Error(`Results retrieval failed with status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.completed && data.path) {
+                    displayResults(data.path);
+                } else {
+                    // If the search is not marked as completed, keep polling
+                    setTimeout(() => pollForResults(searchId), 2000);
+                }
+            })
+            .catch(error => {
+                console.error('Error during result polling:', error);
+            });
+    }, 2000); // Poll every 2 seconds
+}
+
+function displayResults(searchResults) {
+    const resultsListElement = document.getElementById('results-list');
+    resultsListElement.innerHTML = ''; // Clear previous results
+
+    searchResults.forEach(url => {
+        const listItem = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = url;
+        link.textContent = url; // Just display the URL as the text content
+        listItem.appendChild(link);
+        resultsListElement.appendChild(listItem);
+    });
+}
