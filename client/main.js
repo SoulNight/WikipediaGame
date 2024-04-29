@@ -6,7 +6,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const abortButton = document.getElementById('abort-btn');
     const searchingElement = document.getElementById('searching');
     const searchIdElement = document.getElementById('search-id');
+    const heuristicSelect = document.getElementById('heuristic-select');
+    const searchMethodInputs = document.querySelectorAll('input[name="search-method"]');
     let searchId;
+
+    function updateHeuristicVisibility() {
+        const isAStarSelected = Array.from(searchMethodInputs).some(input => input.value === 'a_star' && input.checked);
+        heuristicSelect.classList.toggle('visible', isAStarSelected);
+    }
+
+    searchMethodInputs.forEach(input => 
+        input.addEventListener('change', updateHeuristicVisibility)
+    );
+
+    updateHeuristicVisibility(); // Initial check on page load
 
     // EventSource to listen for logs from the server
     const eventSource = new EventSource('/logs');
@@ -16,8 +29,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
         logsElement.appendChild(logItem);
     };
 
+    // Function to clear statistics
+    function clearStatistics() {
+        const statsElement = document.getElementById('stats-content');
+        if (statsElement) {
+            statsElement.innerHTML = '';
+        }
+    }
+
     form.addEventListener('submit', function(event) {
         event.preventDefault();
+        clearStatistics(); // Call this function to clear the statistics before starting a new search
         searchingElement.textContent = 'Searching...';
         logsElement.innerHTML = ''; // Reset logs
         document.getElementById('results-list').innerHTML = ''; // Clear search results
@@ -25,6 +47,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const startPage = document.getElementById('start-page').value;
         const finishPage = document.getElementById('finish-page').value;
         const searchMethod = document.querySelector('input[name="search-method"]:checked').value;
+        const heuristicChoice = document.getElementById('heuristic-choice') ? document.getElementById('heuristic-choice').value : 'links'; // Default to 'links' if not present
 
         fetch('/find_path', {
             method: 'POST',
@@ -35,6 +58,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 start: startPage,
                 finish: finishPage,
                 method: searchMethod,
+                heuristic: heuristicChoice, // Send the heuristic choice to the server
             }),
         })
         .then(response => {
@@ -77,6 +101,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 console.log('Search aborted successfully.');
                 searchingElement.textContent = 'Search has been aborted.';
                 searchIdElement.textContent = '';
+                clearStatistics(); // Clear statistics when search is aborted
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -89,6 +114,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     console.log("Finished fetch request setup.");
 });
+
 
 function pollForResults(searchId) {
     setTimeout(() => {
@@ -104,7 +130,9 @@ function pollForResults(searchId) {
                 return response.json();
             })
             .then(data => {
+                console.log('Received data:', data); // Log the data received from the server
                 if (data) {
+                    console.log('Received path length:', data.path_length);
                     if (data.completed && data.path) {
                         displayResults(data.path);
                         displayStatistics({
@@ -115,7 +143,7 @@ function pollForResults(searchId) {
                           searchMethod: data.search_method
                         });
                     } else if (data.message === 'Search is in progress') {
-                        setTimeout(() => pollForResults(searchId), 2000);
+                        setTimeout(() => pollForResults(searchId), 150000);
                     }
                 }
             })
@@ -125,7 +153,11 @@ function pollForResults(searchId) {
     }, 2000);
 }
 
+
+
+
 function displayResults(searchResults) {
+    console.log('Displaying search results:', searchResults);
     const resultsListElement = document.getElementById('results-list');
     resultsListElement.innerHTML = '';
 
@@ -140,6 +172,8 @@ function displayResults(searchResults) {
 }
 
 function displayStatistics(data) {
+    console.log('Displaying statistics:', data);
+    console.log('Displaying path length:', data.pathLength);
     const statsElement = document.getElementById('stats-content');
     if (!statsElement) return;
 
@@ -152,7 +186,7 @@ function displayStatistics(data) {
 
     // Dynamically create list items for each statistic
     const statistics = {
-        'Total Links Found': data.totalLinksFound,
+        'Total Pages Discovered': data.totalLinksFound,
         'Path Found': data.pathFound ? 'Yes' : 'No',
         'Path Length': data.pathLength,
         'Search Time': `${searchTimeFormatted} seconds`, // Updated to use formatted time

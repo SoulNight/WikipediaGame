@@ -177,3 +177,14 @@ a:hover {
         font-size: 1em; /* Larger font size for readability on small screens */
     }
 }
+
+#heuristic-select {
+    display: none;
+    transition: all 0.3s ease;
+    overflow: hidden; /* Keeps content from displaying when height is zero */
+}
+
+#heuristic-select.visible {
+    display: block;
+    padding: 10px 0;
+}
