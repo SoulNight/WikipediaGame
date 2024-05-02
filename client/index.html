@@ -21,9 +21,9 @@
            
             <fieldset>
                 <legend>Search Strategy:</legend>
-                <label><input type="radio" name="search-method" value="bidirectional" checked> Bidirectional</label><br>
-                <label><input type="radio" name="search-method" value="breadth-first"> Breadth-first Search</label><br>
-                <label><input type="radio" name="search-method" value="a_star"> A* Search</label><br>
+                <label><input type="checkbox" name="search-method" value="bidirectional" checked> Bidirectional</label><br>
+                <label><input type="checkbox" name="search-method" value="breadth-first"> Breadth-first Search</label><br>
+                <label><input type="checkbox" name="search-method" value="a_star"> A* Search</label><br>
             </fieldset>
             
             
@@ -69,5 +69,19 @@
             </div>
         </footer>
     </div>
+    <script>
+        // JavaScript code to limit the selection to two checkboxes
+        const maxSelections = 2; // Maximum number of selections allowed
+
+        // Event listener for checkboxes
+        document.querySelectorAll('input[name="search-method"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const checkedCheckboxes = document.querySelectorAll('input[name="search-method"]:checked');
+                if (checkedCheckboxes.length > maxSelections) {
+                    this.checked = false; // Uncheck the current checkbox if the maximum selections have been reached
+                }
+            });
+        });
+    </script>
 </body>
 </html>
