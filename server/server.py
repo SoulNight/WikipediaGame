@@ -101,7 +101,7 @@ def search_and_log(start_page, finish_page, search_method, search_id):
 
     # Set initial search state to incomplete
     search_states[search_id] = {'completed': False}
-
+    
     # Precompute and cache the finish page keywords if A* search is selected
     if search_method == 'a_star':
         precompute_finish_page_keywords(finish_page)
@@ -118,19 +118,19 @@ def search_and_log(start_page, finish_page, search_method, search_id):
 
     # Initialize the search as incomplete
     search_completed[search_id] = False
-
     try:
         abort_search_event.clear()
-
         # Execute the search based on the selected search method
-        if search_method == 'a_star':
-            path, time_elapsed, discovered, search_method, total_links = a_star(start_page, finish_page, logs_queue, search_id)
-        elif search_method == 'bidirectional':
+        print(search_method)
+        if search_method == 'bidirectional':
             path, time_elapsed, discovered, search_method, total_links = bidirectional_search(start_page, finish_page, logs_queue, search_id)
-        elif search_method == 'breadth-first':
+        if search_method == 'breadth-first':
             path, time_elapsed, discovered, search_method, total_links = breadth_first_search(start_page, finish_page, logs_queue, search_id)
-        
+        elif search_method == 'a_star':
+            path, time_elapsed, discovered, search_method, total_links = a_star(start_page, finish_page, logs_queue, search_id)
+            
         print(f"Search {search_id} completed. Path found: {path}")
+        
 
         # If a path is found, set the search state to completed
         if path:
@@ -166,7 +166,7 @@ def search_and_log(start_page, finish_page, search_method, search_id):
                 'path_length': path_length,
             }
             print(f"Stored results for {search_id}: {search_results[search_id]}")
-        
+        print("abc")
         # Mark the search as completed
         search_completed[search_id] = True
 
@@ -219,7 +219,6 @@ def get_results(search_id):
 
     # Debugging line to print search ID
     print(f"Getting results for search ID: {search_id}")
-
     # Check if the search has completed
     if search_id in search_completed:
         if search_completed[search_id]:

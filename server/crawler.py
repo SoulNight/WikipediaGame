@@ -152,29 +152,6 @@ def get_links(page_url, logs_queue, search_id):
         return [], 0
 
 
-# Define a function named heuristic_by_content that takes a current page URL as input
-def heuristic_by_content(current_page):
-    # Access the global variable finish_page_keywords_cache
-    global finish_page_keywords_cache
-    
-    # Get the keywords from the current page using the get_page_keywords function
-    current_keywords = get_page_keywords(current_page)
-    
-    # Calculate the score based on the intersection of keywords between the current page and finish page
-    score = sum(current_keywords[word] * count for word, count in finish_page_keywords_cache.items() if word in current_keywords)
-    
-    # Calculate the maximum possible score based on the keywords of the finish page
-    max_possible_score = sum(finish_page_keywords_cache.values())
-    
-    # Normalize the score to a value between 0 and 1
-    normalized_score = score / max_possible_score if max_possible_score else 0
-    
-    # Calculate the distance as 1 minus the normalized score
-    distance = 1 - normalized_score
-    
-    # Return the calculated distance
-    return distance
-
 
 # Define a function named precompute_finish_page_keywords that takes a finish page URL as input
 def precompute_finish_page_keywords(finish_page):
@@ -187,34 +164,56 @@ def precompute_finish_page_keywords(finish_page):
     # Extract keywords from the finish page text and store them in the finish_page_keywords_cache
     finish_page_keywords_cache = extract_keywords(finish_text)
 
+def heuristic_by_content(current_page, finish_page_keywords_cache):
+    # Get the keywords from the current page using the get_page_keywords function
+    current_keywords = get_page_keywords(current_page)
+    
+    # Calculate the Jaccard similarity coefficient between the current page keywords and finish page keywords
+    intersection = set(current_keywords.keys()) & set(finish_page_keywords_cache.keys())
+    union = set(current_keywords.keys()) | set(finish_page_keywords_cache.keys())
+    similarity = len(intersection) / len(union) if union else 0
+    
+    # Calculate the distance as 1 minus the similarity
+    distance = 1 - similarity
+    
+    # Return the calculated distance
+    return distance
 
 # Define a function named a_star that takes start and finish page URLs, logs queue, and search ID as input
 def a_star(start_page, finish_page, logs_queue, search_id):
-    # Access global variables
+    # Use global variables for search states and finish page keywords cache
     global search_states, finish_page_keywords_cache
 
     # Ensure the finish page keywords are precomputed
     assert finish_page_keywords_cache is not None, "Finish page keywords are not precomputed"
 
-    # Initialize open set, g-costs, closed set, and other variables
-    open_set = []  # Priority queue for nodes to be evaluated
-    heapq.heappush(open_set, (0, start_page, [start_page]))  # Initial state: cost, current page, path list
-    g_costs = {start_page: 0}  # Actual cost from start to each node
-    closed_set = set()  # Set of nodes already evaluated
-    total_links_count = 0  # Total count of links processed
-    start_time = time.time()  # Record start time
+    # Initialize the open set with the start page and its path
+    open_set = []
+    heapq.heappush(open_set, (0, start_page, [start_page]))
+    
+    # Dictionary to store the cost of the path from the start page to the current page
+    g_costs = {start_page: 0}
+    
+    # Set to keep track of the pages that have already been evaluated
+    closed_set = set()
+    
+    # Initialize the total count of links processed
+    total_links_count = 0
+    
+    # Record the start time of the search
+    start_time = time.time()
 
-    # Main loop: continue until open set is empty or search is completed
+    # Continue the search while there are pages to evaluate and the search is not completed
     while open_set and not search_states.get(search_id, {}).get('completed', False):
-        # Check if search has been aborted
+        # Check if the search has been aborted
         if abort_search_event.is_set():
             logs_queue.put(f"Search {search_id} aborted by user request.")
             return None, time.time() - start_time, len(g_costs), 'a_star', total_links_count
 
-        # Pop the node with the lowest f-value from the open set
+        # Get the page with the lowest estimated cost from the open set
         _, current_page, path = heapq.heappop(open_set)
 
-        # Check if the finish page is reached
+        # If the current page is the finish page, return the successful path
         if current_page == finish_page:
             logs_queue.put(f"Search {search_id} completed. Path found: {path}")
             return path, time.time() - start_time, len(g_costs), 'a_star', total_links_count
@@ -222,28 +221,35 @@ def a_star(start_page, finish_page, logs_queue, search_id):
         # Add the current page to the closed set
         closed_set.add(current_page)
 
-        # Get valid links from the current page and count page links
+        # Retrieve valid links from the current page and update the total link count
         valid_links, page_links_count = get_links(current_page, logs_queue, search_id)
         total_links_count += page_links_count
 
-        # Explore neighbors of the current page
+        # Evaluate each neighbor linked from the current page
         for neighbor in valid_links:
+            # Skip the neighbor if it has already been evaluated
             if neighbor in closed_set:
                 continue
 
-            # Compute tentative g-cost for the neighbor
+            # Calculate the tentative cost to reach the neighbor
             tentative_g_cost = g_costs[current_page] + 1
 
-            #figure out a way to caclulate the heuristic cost for 1 above
-
-            # Update g-cost and estimated total cost if necessary
+            # If the neighbor has not been evaluated or a shorter path to it is found
             if neighbor not in g_costs or tentative_g_cost < g_costs[neighbor]:
+                # Update the cost to reach the neighbor
                 g_costs[neighbor] = tentative_g_cost
-                heuristic_cost = heuristic_by_content(neighbor)  # Use content-based heuristic directly
+                # Estimate the total cost using the heuristic
+                heuristic_cost = heuristic_by_content(neighbor, finish_page_keywords_cache)
                 estimated_total_cost = tentative_g_cost + heuristic_cost
+                # Add the neighbor to the open set with the updated path
                 heapq.heappush(open_set, (estimated_total_cost, neighbor, path + [neighbor]))
 
-    # If the loop completes without finding a path, log and return
+                # If the neighbor is the finish page, return the successful path
+                if neighbor == finish_page:
+                    logs_queue.put(f"Search {search_id} completed. Path found: {path + [neighbor]}")
+                    return path + [neighbor], time.time() - start_time, len(g_costs), 'a_star', total_links_count
+
+    # If no path is found, log the conclusion and return the search details
     logs_queue.put(f"Search {search_id} concluded without finding a path.")
     return None, time.time() - start_time, len(g_costs), 'a_star', total_links_count
 
