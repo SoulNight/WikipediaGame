@@ -6,7 +6,7 @@ At the time of this writing available at https://wikipiediagame.azurewebsites.ne
 
 (these instructions should work under GNU/Linux and Macos and WSL)
 
-https://github.com/AidanFLG/AidanFLG.github.io/server/
+[Live Website](https://aidanflg.github.io/server/)
 
 Prerequisites: Python
 
